@@ -1,7 +1,7 @@
  // ── MILAN MODE ──────────────────────────────────────────────────
 const isMilan = new URLSearchParams(window.location.search).get('milan') === 'true';
 
-window.document.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
   if (isMilan) {
     // Show the relocation paragraph in About
     document.getElementById('milan-para').style.display = 'block';
@@ -11,9 +11,7 @@ window.document.onload = () => {
     document.getElementById('contact-sub').textContent =
       'Open to front-end, full-stack and game development roles in Milan, Italy, the UK, or remotely. Drop me a message, I respond to every enquiry.';
   }
-};
-
-
+});
 
 // Scroll reveal
   const reveals = document.querySelectorAll('.reveal');
