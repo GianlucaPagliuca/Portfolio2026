@@ -1,941 +1,318 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Gianluca Pagliuca — Software Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --ink: #0f0f0f;
-    --paper: #f7f4ef;
-    --accent: #c0392b;
-    --accent2: #1B4F8A;
-    --mid: #6b6b6b;
-    --light: #e8e4dd;
-    --mono: 'DM Mono', monospace;
-    --serif: 'DM Serif Display', serif;
-    --sans: 'DM Sans', sans-serif;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-weight: 300;
-    overflow-x: hidden;
-  }
-
-  /* ── NOISE TEXTURE ─────── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 1000;
-    opacity: 0.4;
-  }
-
-  /* ── NAV ───────────────── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.2rem 3rem;
-    background: rgba(247, 244, 239, 0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--light);
-  }
-
-  .nav-logo {
-    font-family: var(--mono);
-    font-size: 0.85rem;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-  }
-
-  .nav-links {
-    display: flex;
-    gap: 2.5rem;
-    list-style: none;
-  }
-
-  .nav-links a {
-    font-family: var(--mono);
-    font-size: 0.78rem;
-    color: var(--mid);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: color 0.2s;
-  }
-
-  .nav-links a:hover { color: var(--ink); }
-
-  /* ── HERO ──────────────── */
-  #hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .hero-left {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    padding: 8rem 4rem 6rem 5rem;
-    position: relative;
-  }
-
-  .hero-tag {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin-bottom: 1.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.2s forwards;
-  }
-
-  .hero-name {
-    font-family: var(--serif);
-    font-size: clamp(3.5rem, 6vw, 6rem);
-    line-height: 0.95;
-    margin-bottom: 2rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.35s forwards;
-  }
-
-  .hero-name em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .hero-desc {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--mid);
-    max-width: 38ch;
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.5s forwards;
-  }
-
-  .hero-cta {
-    display: flex;
-    gap: 1rem;
-    opacity: 0;
-    animation: fadeUp 0.6s 0.65s forwards;
-  }
-
-  .btn {
-    font-family: var(--mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 0.85rem 2rem;
-    text-decoration: none;
-    transition: all 0.2s;
-    border: 1px solid currentColor;
-  }
-
-  .btn-primary {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-  }
-
-  .btn-primary:hover {
-    background: var(--accent);
-    border-color: var(--accent);
-  }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-  }
-
-  .btn-ghost:hover {
-    background: var(--ink);
-    color: var(--paper);
-  }
-
-  .hero-right {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8rem 4rem 6rem 2rem;
-    position: relative;
-  }
-
-  .hero-card {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 2.5rem;
-    width: 100%;
-    max-width: 380px;
-    position: relative;
-    opacity: 0;
-    animation: fadeUp 0.7s 0.8s forwards;
-  }
-
-  .hero-card::before {
-    content: '';
-    position: absolute;
-    top: 8px; left: 8px;
-    right: -8px; bottom: -8px;
-    border: 1px solid var(--accent);
-    z-index: -1;
-  }
-
-  .card-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    color: var(--accent);
-    text-transform: uppercase;
-    margin-bottom: 1.2rem;
-  }
-
-  .stack-list {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2rem;
-  }
-
-  .stack-list li {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    padding: 0.3rem 0.7rem;
-    border: 1px solid rgba(255,255,255,0.15);
-    color: rgba(255,255,255,0.7);
-    letter-spacing: 0.05em;
-  }
-
-  .stack-list li.highlight {
-    border-color: var(--accent);
-    color: var(--accent);
-  }
-
-  .stat-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-    border-top: 1px solid rgba(255,255,255,0.1);
-    padding-top: 1.5rem;
-  }
-
-  .stat-val {
-    font-family: var(--serif);
-    font-size: 2.2rem;
-    color: #fff;
-  }
-
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-top: 0.2rem;
-  }
-
-  /* ── MARQUEE ───────────── */
-  .marquee-wrap {
-    overflow: hidden;
-    border-top: 1px solid var(--light);
-    border-bottom: 1px solid var(--light);
-    padding: 0.9rem 0;
-    background: var(--ink);
-  }
-
-  .marquee-track {
-    display: flex;
-    gap: 3rem;
-    white-space: nowrap;
-    animation: marquee 22s linear infinite;
-  }
-
-  .marquee-track span {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.35);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    flex-shrink: 0;
-  }
-
-  .marquee-track span.accent { color: var(--accent); }
-
-  @keyframes marquee {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* ── SECTION STYLES ────── */
-  section { padding: 6rem 5rem; }
-
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-  }
-
-  .section-num {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.15em;
-  }
-
-  .section-title {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 3.5vw, 3rem);
-    line-height: 1;
-  }
-
-  /* ── ABOUT ─────────────── */
-  #about {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 6rem;
-    align-items: start;
-  }
-
-  .about-text p {
-    font-size: 1.05rem;
-    line-height: 1.8;
-    color: var(--mid);
-    margin-bottom: 1.2rem;
-  }
-
-  .about-text p strong { color: var(--ink); font-weight: 500; }
-
-  .about-aside {
-    padding-top: 1rem;
-  }
-
-  .aside-block {
-    border-left: 2px solid var(--light);
-    padding-left: 1.5rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .aside-block h4 {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.8rem;
-  }
-
-  .aside-block p {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--mid);
-  }
-
-  /* ── PROJECTS ──────────── */
-  #projects { background: var(--ink); color: var(--paper); }
-  #projects .section-title { color: var(--paper); }
-  #projects .section-num { color: var(--accent); }
-
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5px;
-    background: rgba(255,255,255,0.08);
-  }
-
-  .project-card {
-    background: var(--ink);
-    padding: 2.5rem;
-    position: relative;
-    overflow: hidden;
-    cursor: default;
-    transition: background 0.3s;
-  }
-
-  .project-card:hover { background: #1a1a1a; }
-
-  .project-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    height: 2px;
-    width: 0;
-    background: var(--accent);
-    transition: width 0.4s ease;
-  }
-
-  .project-card:hover::after { width: 100%; }
-
-  .project-num {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    color: rgba(255,255,255,0.25);
-    letter-spacing: 0.2em;
-    margin-bottom: 1.5rem;
-  }
-
-  .project-title {
-    font-family: var(--serif);
-    font-size: 1.5rem;
-    margin-bottom: 0.8rem;
-    color: #fff;
-  }
-
-  .project-desc {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: rgba(255,255,255,0.45);
-    margin-bottom: 1.5rem;
-  }
-
-  .project-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .project-tags span {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    padding: 0.25rem 0.6rem;
-    border: 1px solid rgba(255,255,255,0.12);
-    color: rgba(255,255,255,0.4);
-    letter-spacing: 0.05em;
-  }
-
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    color: var(--accent);
-    text-decoration: none;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    transition: gap 0.2s;
-  }
-
-  .project-link:hover { gap: 0.8rem; }
-
-  /* ── EXPERIENCE ────────── */
-  #experience {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 6rem;
-  }
-
-  .exp-sticky { position: sticky; top: 7rem; height: fit-content; }
-
-  .timeline { position: relative; }
-
-  .timeline::before {
-    content: '';
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 1px;
-    background: var(--light);
-  }
-
-  .timeline-item {
-    padding-left: 2rem;
-    padding-bottom: 3rem;
-    position: relative;
-  }
-
-  .timeline-item::before {
-    content: '';
-    position: absolute;
-    left: -3px; top: 0.4rem;
-    width: 7px; height: 7px;
-    background: var(--accent);
-    border-radius: 50%;
-  }
-
-  .tl-date {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: var(--accent);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-
-  .tl-role {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    margin-bottom: 0.2rem;
-  }
-
-  .tl-company {
-    font-family: var(--mono);
-    font-size: 0.75rem;
-    color: var(--mid);
-    margin-bottom: 1rem;
-    letter-spacing: 0.05em;
-  }
-
-  .tl-desc {
-    font-size: 0.9rem;
-    line-height: 1.7;
-    color: var(--mid);
-  }
-
-  /* ── SKILLS ────────────── */
-  #skills {
-    background: #f0ede7;
-  }
-
-  .skills-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .skill-group h3 {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.2rem;
-    padding-bottom: 0.6rem;
-    border-bottom: 1px solid var(--light);
-  }
-
-  .skill-items {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-  }
-
-  .skill-item {
-    font-size: 0.9rem;
-    color: var(--mid);
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-  }
-
-  .skill-item::before {
-    content: '';
-    width: 4px; height: 4px;
-    background: var(--accent);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  /* ── CONTACT ───────────── */
-  #contact {
-    background: var(--ink);
-    color: var(--paper);
-    text-align: center;
-    padding: 8rem 5rem;
-  }
-
-  #contact .section-title { color: var(--paper); font-size: clamp(2.5rem, 5vw, 4.5rem); margin-bottom: 1.5rem; }
-
-  .contact-sub {
-    font-size: 1rem;
-    color: rgba(255,255,255,0.4);
-    margin-bottom: 3rem;
-    max-width: 45ch;
-    margin-left: auto;
-    margin-right: auto;
-    line-height: 1.7;
-  }
-
-  .contact-links {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  /* ── FOOTER ────────────── */
-  footer {
-    background: var(--ink);
-    border-top: 1px solid rgba(255,255,255,0.06);
-    padding: 1.5rem 5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  footer p {
-    font-family: var(--mono);
-    font-size: 0.7rem;
-    color: rgba(255,255,255,0.2);
-    letter-spacing: 0.05em;
-  }
-
-  /* ── ANIMATIONS ────────── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-  }
-
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* ── RESPONSIVE ────────── */
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { gap: 1.2rem; }
-    #hero { grid-template-columns: 1fr; min-height: auto; }
-    .hero-left { padding: 7rem 2rem 3rem; }
-    .hero-right { padding: 2rem; }
-    section { padding: 4rem 2rem; }
-    #about { grid-template-columns: 1fr; gap: 3rem; }
-    .projects-grid { grid-template-columns: 1fr; }
-    #experience { grid-template-columns: 1fr; gap: 3rem; }
-    .skills-grid { grid-template-columns: 1fr 1fr; }
-    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">GP.dev</div>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#experience">Experience</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-left">
-    <p class="hero-tag">// Front-End Developer · Full-Stack Exposure</p>
-    <h1 class="hero-name">Gianluca<br/><em>Pagliuca</em></h1>
-    <p class="hero-desc">
-      Nearly 5 years building robust B2B web applications. I specialise in front-end development,
-      data integration, and turning legacy systems into something people actually enjoy using.
-    </p>
-    <div class="hero-cta">
-      <a href="#projects" class="btn btn-primary">View Projects</a>
-      <a href="https://github.com/GianlucaPagliuca" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gianluca Pagliuca — Software Developer</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">GianPag.dev</div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-left">
+      <p class="hero-tag">// Front-End Developer · Full-Stack Exposure</p>
+      <h1 class="hero-name">Gianluca<br/><em>Pagliuca</em></h1>
+      <p class="hero-desc">
+        Nearly 5 years building robust B2B web applications. I specialise in front-end development,
+        data integration, and turning legacy systems into something people actually enjoy using.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects</a>
+        <a href="https://github.com/GianlucaPagliuca" target="_blank" class="btn btn-ghost">GitHub ↗</a>
+      </div>
     </div>
-  </div>
-  <div class="hero-right">
-    <div class="hero-card">
-      <p class="card-label">// Current Stack</p>
-      <ul class="stack-list">
-        <li class="highlight">JavaScript</li>
-        <li class="highlight">React</li>
-        <li class="highlight">Vue</li>
-        <li>VB.NET</li>
-        <li>SQL</li>
-        <li>Node.js</li>
-        <li>MongoDB</li>
-        <li>jQuery</li>
-        <li>CSS3</li>
-        <li>Python</li>
-        <li>C#</li>
-        <li>Flutter</li>
-      </ul>
-      <div class="stat-row">
-        <div>
-          <div class="stat-val">5<span style="color:var(--accent)">yr</span></div>
-          <div class="stat-label">Professional Exp.</div>
-        </div>
-        <div>
-          <div class="stat-val">1<span style="color:var(--accent)">M+</span></div>
-          <div class="stat-label">Lines Processed</div>
+    <div class="hero-right">
+      <div class="hero-card">
+        <p class="card-label">// Current Stack</p>
+        <ul class="stack-list">
+          <li class="highlight">JavaScript</li>
+          <li class="highlight">React</li>
+          <li class="highlight">Vue</li>
+          <li>VB.NET</li>
+          <li>SQL</li>
+          <li>Node.js</li>
+          <li>MongoDB</li>
+          <li>jQuery</li>
+          <li>CSS3</li>
+          <li>Python</li>
+          <li>C#</li>
+          <li>Flutter</li>
+        </ul>
+        <div class="stat-row">
+          <div>
+            <div class="stat-val">5<span style="color:var(--accent)">yr</span></div>
+            <div class="stat-label">Professional Exp.</div>
+          </div>
+          <div>
+            <div class="stat-val">1<span style="color:var(--accent)">M+</span></div>
+            <div class="stat-label">Lines Processed</div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- MARQUEE -->
-<div class="marquee-wrap">
-  <div class="marquee-track">
-    <span>JavaScript</span><span class="accent">·</span>
-    <span>React</span><span class="accent">·</span>
-    <span>Vue</span><span class="accent">·</span>
-    <span>VB.NET</span><span class="accent">·</span>
-    <span>SQL</span><span class="accent">·</span>
-    <span>Node.js</span><span class="accent">·</span>
-    <span>MongoDB</span><span class="accent">·</span>
-    <span>REST APIs</span><span class="accent">·</span>
-    <span>Unity 6</span><span class="accent">·</span>
-    <span>Godot</span><span class="accent">·</span>
-    <span>Flutter</span><span class="accent">·</span>
-    <span>Tailwind CSS</span><span class="accent">·</span>
-    <span>Git</span><span class="accent">·</span>
-    <span>Python</span><span class="accent">·</span>
-    <!-- duplicate for seamless loop -->
-    <span>JavaScript</span><span class="accent">·</span>
-    <span>React</span><span class="accent">·</span>
-    <span>Vue</span><span class="accent">·</span>
-    <span>VB.NET</span><span class="accent">·</span>
-    <span>SQL</span><span class="accent">·</span>
-    <span>Node.js</span><span class="accent">·</span>
-    <span>MongoDB</span><span class="accent">·</span>
-    <span>REST APIs</span><span class="accent">·</span>
-    <span>Unity 6</span><span class="accent">·</span>
-    <span>Godot</span><span class="accent">·</span>
-    <span>Flutter</span><span class="accent">·</span>
-    <span>Tailwind CSS</span><span class="accent">·</span>
-    <span>Git</span><span class="accent">·</span>
-    <span>Python</span><span class="accent">·</span>
-  </div>
-</div>
-
-<!-- ABOUT -->
-<section id="about">
-  <div class="about-text reveal">
-    <div class="section-header">
-      <span class="section-num">01</span>
-      <h2 class="section-title">About Me</h2>
+  <!-- MARQUEE -->
+  <div class="marquee-wrap">
+    <div class="marquee-track">
+      <span>JavaScript</span><span class="accent">·</span>
+      <span>React</span><span class="accent">·</span>
+      <span>Vue</span><span class="accent">·</span>
+      <span>VB.NET</span><span class="accent">·</span>
+      <span>SQL</span><span class="accent">·</span>
+      <span>Node.js</span><span class="accent">·</span>
+      <span>MongoDB</span><span class="accent">·</span>
+      <span>REST APIs</span><span class="accent">·</span>
+      <span>Unity 6</span><span class="accent">·</span>
+      <span>Godot</span><span class="accent">·</span>
+      <span>Flutter</span><span class="accent">·</span>
+      <span>Tailwind CSS</span><span class="accent">·</span>
+      <span>Git</span><span class="accent">·</span>
+      <span>Python</span><span class="accent">·</span>
+      <!-- duplicate for seamless loop -->
+      <span>JavaScript</span><span class="accent">·</span>
+      <span>React</span><span class="accent">·</span>
+      <span>Vue</span><span class="accent">·</span>
+      <span>VB.NET</span><span class="accent">·</span>
+      <span>SQL</span><span class="accent">·</span>
+      <span>Node.js</span><span class="accent">·</span>
+      <span>MongoDB</span><span class="accent">·</span>
+      <span>REST APIs</span><span class="accent">·</span>
+      <span>Unity 6</span><span class="accent">·</span>
+      <span>Godot</span><span class="accent">·</span>
+      <span>Flutter</span><span class="accent">·</span>
+      <span>Tailwind CSS</span><span class="accent">·</span>
+      <span>Git</span><span class="accent">·</span>
+      <span>Python</span><span class="accent">·</span>
     </div>
-    <p>
-      I'm a <strong>front-end developer with full-stack exposure</strong> based in Corby, UK, with nearly five years of professional experience building B2B web applications at Complis. My day-to-day spans both front-end and back-end work — VB.NET, SQL, jQuery and JavaScript — but my passion and strongest skills lie on the front-end.
+  </div>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="about-text reveal">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2 class="section-title">About Me</h2>
+      </div>
+      <p>
+        I'm a <strong>front-end developer with full-stack exposure</strong> based in Corby, UK, with nearly five years of professional experience building B2B web applications at Complis. My day-to-day spans both front-end and back-end work — VB.NET, SQL, jQuery and JavaScript — but my passion and strongest skills lie on the front-end.
+      </p>
+      <p>
+        Outside of my day job, I've been building with <strong>React, Vue and Node.js</strong>, and I have a genuine passion for game development using Unity and Godot. I approach every project with the same mindset: understand the problem deeply, then build something that actually holds up.
+      </p>
+      <p>
+        I'm currently exploring a potential move to <strong>Milan, Italy</strong> — where my family roots are — and I'm open to remote or hybrid opportunities internationally.
+      </p>
+    </div>
+    <div class="about-aside reveal">
+      <div class="aside-block">
+        <h4>Location</h4>
+        <p>Corby, Northamptonshire, UK<br/>Open to Milan, Italy &amp; Remote</p>
+      </div>
+      <div class="aside-block">
+        <h4>Education</h4>
+        <p>HND Computer Games Development (Merit)<br/>University of Northampton, 2015–2017</p>
+      </div>
+      <div class="aside-block">
+        <h4>Learning</h4>
+        <p>Udemy — Vue, React, Node.js, MongoDB<br/>Continuous self-directed study</p>
+      </div>
+      <div class="aside-block">
+        <h4>GitHub</h4>
+        <p><a href="https://github.com/GianlucaPagliuca" target="_blank" style="color:var(--accent);text-decoration:none;">github.com/GianlucaPagliuca ↗</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header reveal">
+      <span class="section-num">02</span>
+      <h2 class="section-title">Projects</h2>
+    </div>
+    <div class="projects-grid">
+
+      <div class="project-card reveal">
+        <p class="project-num">// 001</p>
+        <h3 class="project-title">DataVis Dashboard</h3>
+        <p class="project-desc">
+          A full-stack analytics dashboard built with React, Node.js and MongoDB. Visualises
+          large datasets with dynamic filtering and real-time updates — inspired directly by
+          my experience processing 1M+ line JSON imports at work.
+        </p>
+        <div class="project-tags">
+          <span>React</span><span>Node.js</span><span>MongoDB</span><span>REST API</span><span>Recharts</span>
+        </div>
+        <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <div class="project-card reveal">
+        <p class="project-num">// 002</p>
+        <h3 class="project-title">Browser Puzzle Game</h3>
+        <p class="project-desc">
+          A browser-based puzzle game built with Godot and exported to WebAssembly.
+          Features procedural level generation and a custom save system using IndexedDB.
+          Demonstrates game dev skills applied to web delivery.
+        </p>
+        <div class="project-tags">
+          <span>Godot</span><span>GDScript</span><span>WebAssembly</span><span>JavaScript</span>
+        </div>
+        <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <div class="project-card reveal">
+        <p class="project-num">// 003</p>
+        <h3 class="project-title">UI Component Library</h3>
+        <p class="project-desc">
+          A reusable Vue 3 component library with Tailwind CSS styling, full accessibility
+          support and comprehensive documentation. Built to showcase component architecture
+          and design system thinking for modern front-end projects.
+        </p>
+        <div class="project-tags">
+          <span>Vue 3</span><span>Tailwind CSS</span><span>Storybook</span><span>A11y</span>
+        </div>
+        <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+
+      <div class="project-card reveal">
+        <p class="project-num">// 004</p>
+        <h3 class="project-title">API Integration Hub</h3>
+        <p class="project-desc">
+          A Node.js service that aggregates data from multiple third-party REST APIs,
+          normalises responses, and serves a unified endpoint with caching. Mirrors
+          real-world integration work done professionally with B2B client data pipelines.
+        </p>
+        <div class="project-tags">
+          <span>Node.js</span><span>Express</span><span>REST APIs</span><span>Redis</span><span>SQL</span>
+        </div>
+        <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="exp-sticky reveal">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2 class="section-title">Experience</h2>
+      </div>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.7;max-width:28ch;">
+        Nearly 5 years in B2B software, with a decade of professional experience overall.
+      </p>
+    </div>
+    <div class="timeline reveal">
+
+      <div class="timeline-item">
+        <p class="tl-date">June 2021 – Present</p>
+        <h3 class="tl-role">Software Developer</h3>
+        <p class="tl-company">Complis · Corby, UK</p>
+        <p class="tl-desc">
+          Building and maintaining front-end systems for a diverse B2B client base using VB.NET, jQuery and SQL. Engineered a data ingestion pipeline processing 1M+ line JSON datasets via REST APIs. Full ownership of the bug-fix lifecycle, from root-cause analysis through to production resolution. Contributed to a UI modernisation initiative improving cross-browser compatibility and accessibility.
+        </p>
+      </div>
+
+      <div class="timeline-item">
+        <p class="tl-date">2015 – 2017</p>
+        <h3 class="tl-role">HND Computer Games Development</h3>
+        <p class="tl-company">University of Northampton · Merit</p>
+        <p class="tl-desc">
+          Studied game development, software engineering principles, and programming fundamentals. Graduated with a Merit. This foundation directly informs my systematic approach to building software and debugging complex systems.
+        </p>
+      </div>
+
+      <div class="timeline-item">
+        <p class="tl-date">Ongoing</p>
+        <h3 class="tl-role">Self-Directed Learning</h3>
+        <p class="tl-company">Udemy &amp; Personal Projects</p>
+        <p class="tl-desc">
+          Completed multiple courses covering Vue, React, Node.js and MongoDB. Currently building portfolio projects to deepen practical experience with modern full-stack development and game development pipelines.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header reveal">
+      <span class="section-num">04</span>
+      <h2 class="section-title">Skills</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group reveal">
+        <h3>Languages</h3>
+        <div class="skill-items">
+          <div class="skill-item">JavaScript (ES6+)</div>
+          <div class="skill-item">VB.NET</div>
+          <div class="skill-item">SQL</div>
+          <div class="skill-item">HTML5 &amp; CSS3</div>
+          <div class="skill-item">Python</div>
+          <div class="skill-item">C#</div>
+          <div class="skill-item">Dart</div>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <h3>Frameworks &amp; Libraries</h3>
+        <div class="skill-items">
+          <div class="skill-item">React</div>
+          <div class="skill-item">Vue 3</div>
+          <div class="skill-item">jQuery</div>
+          <div class="skill-item">.NET Framework</div>
+          <div class="skill-item">Tailwind CSS</div>
+          <div class="skill-item">Bootstrap</div>
+          <div class="skill-item">Flutter</div>
+        </div>
+      </div>
+      <div class="skill-group reveal">
+        <h3>Tools &amp; Platforms</h3>
+        <div class="skill-items">
+          <div class="skill-item">Git &amp; GitHub</div>
+          <div class="skill-item">Node.js</div>
+          <div class="skill-item">MongoDB</div>
+          <div class="skill-item">MS SQL Server</div>
+          <div class="skill-item">Visual Studio / VS Code</div>
+          <div class="skill-item">Unity 6</div>
+          <div class="skill-item">Godot &amp; Unreal Engine 5</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact">
+    <h2 class="section-title reveal">Let's work<br/><em style="font-family:var(--serif);font-style:italic;color:var(--accent)">together.</em></h2>
+    <p class="contact-sub reveal">
+      Open to front-end, full-stack and game development roles in the UK, Milan (Italy) or remotely.
+      Drop me a message — I respond to every enquiry.
     </p>
-    <p>
-      Outside of my day job, I've been building with <strong>React, Vue and Node.js</strong>, and I have a genuine passion for game development using Unity and Godot. I approach every project with the same mindset: understand the problem deeply, then build something that actually holds up.
-    </p>
-    <p>
-      I'm currently exploring a potential move to <strong>Milan, Italy</strong> — where my family roots are — and I'm open to remote or hybrid opportunities internationally.
-    </p>
-  </div>
-  <div class="about-aside reveal">
-    <div class="aside-block">
-      <h4>Location</h4>
-      <p>Corby, Northamptonshire, UK<br/>Open to Milan, Italy &amp; Remote</p>
+    <div class="contact-links reveal">
+      <a href="mailto:gianluca.pagliuca.93@gmail.com" class="btn btn-primary">Email Me</a>
+      <a href="https://github.com/GianlucaPagliuca" target="_blank" class="btn" style="border-color:rgba(255,255,255,0.2);color:#fff;">GitHub ↗</a>
     </div>
-    <div class="aside-block">
-      <h4>Education</h4>
-      <p>HND Computer Games Development (Merit)<br/>University of Northampton, 2015–2017</p>
-    </div>
-    <div class="aside-block">
-      <h4>Learning</h4>
-      <p>Udemy — Vue, React, Node.js, MongoDB<br/>Continuous self-directed study</p>
-    </div>
-    <div class="aside-block">
-      <h4>GitHub</h4>
-      <p><a href="https://github.com/GianlucaPagliuca" target="_blank" style="color:var(--accent);text-decoration:none;">github.com/GianlucaPagliuca ↗</a></p>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-header reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">Projects</h2>
-  </div>
-  <div class="projects-grid">
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 Gianluca Pagliuca</p>
+    <p>Built with HTML · CSS · JS</p>
+  </footer>
 
-    <div class="project-card reveal">
-      <p class="project-num">// 001</p>
-      <h3 class="project-title">DataVis Dashboard</h3>
-      <p class="project-desc">
-        A full-stack analytics dashboard built with React, Node.js and MongoDB. Visualises
-        large datasets with dynamic filtering and real-time updates — inspired directly by
-        my experience processing 1M+ line JSON imports at work.
-      </p>
-      <div class="project-tags">
-        <span>React</span><span>Node.js</span><span>MongoDB</span><span>REST API</span><span>Recharts</span>
-      </div>
-      <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
-    </div>
-
-    <div class="project-card reveal">
-      <p class="project-num">// 002</p>
-      <h3 class="project-title">Browser Puzzle Game</h3>
-      <p class="project-desc">
-        A browser-based puzzle game built with Godot and exported to WebAssembly.
-        Features procedural level generation and a custom save system using IndexedDB.
-        Demonstrates game dev skills applied to web delivery.
-      </p>
-      <div class="project-tags">
-        <span>Godot</span><span>GDScript</span><span>WebAssembly</span><span>JavaScript</span>
-      </div>
-      <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
-    </div>
-
-    <div class="project-card reveal">
-      <p class="project-num">// 003</p>
-      <h3 class="project-title">UI Component Library</h3>
-      <p class="project-desc">
-        A reusable Vue 3 component library with Tailwind CSS styling, full accessibility
-        support and comprehensive documentation. Built to showcase component architecture
-        and design system thinking for modern front-end projects.
-      </p>
-      <div class="project-tags">
-        <span>Vue 3</span><span>Tailwind CSS</span><span>Storybook</span><span>A11y</span>
-      </div>
-      <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
-    </div>
-
-    <div class="project-card reveal">
-      <p class="project-num">// 004</p>
-      <h3 class="project-title">API Integration Hub</h3>
-      <p class="project-desc">
-        A Node.js service that aggregates data from multiple third-party REST APIs,
-        normalises responses, and serves a unified endpoint with caching. Mirrors
-        real-world integration work done professionally with B2B client data pipelines.
-      </p>
-      <div class="project-tags">
-        <span>Node.js</span><span>Express</span><span>REST APIs</span><span>Redis</span><span>SQL</span>
-      </div>
-      <a href="https://github.com/GianlucaPagliuca" class="project-link" target="_blank">View on GitHub →</a>
-    </div>
-
-  </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-  <div class="exp-sticky reveal">
-    <div class="section-header">
-      <span class="section-num">03</span>
-      <h2 class="section-title">Experience</h2>
-    </div>
-    <p style="font-size:0.9rem;color:var(--mid);line-height:1.7;max-width:28ch;">
-      Nearly 5 years in B2B software, with a decade of professional experience overall.
-    </p>
-  </div>
-  <div class="timeline reveal">
-
-    <div class="timeline-item">
-      <p class="tl-date">June 2021 – Present</p>
-      <h3 class="tl-role">Software Developer</h3>
-      <p class="tl-company">Complis · Corby, UK</p>
-      <p class="tl-desc">
-        Building and maintaining front-end systems for a diverse B2B client base using VB.NET, jQuery and SQL. Engineered a data ingestion pipeline processing 1M+ line JSON datasets via REST APIs. Full ownership of the bug-fix lifecycle, from root-cause analysis through to production resolution. Contributed to a UI modernisation initiative improving cross-browser compatibility and accessibility.
-      </p>
-    </div>
-
-    <div class="timeline-item">
-      <p class="tl-date">2015 – 2017</p>
-      <h3 class="tl-role">HND Computer Games Development</h3>
-      <p class="tl-company">University of Northampton · Merit</p>
-      <p class="tl-desc">
-        Studied game development, software engineering principles, and programming fundamentals. Graduated with a Merit. This foundation directly informs my systematic approach to building software and debugging complex systems.
-      </p>
-    </div>
-
-    <div class="timeline-item">
-      <p class="tl-date">Ongoing</p>
-      <h3 class="tl-role">Self-Directed Learning</h3>
-      <p class="tl-company">Udemy &amp; Personal Projects</p>
-      <p class="tl-desc">
-        Completed multiple courses covering Vue, React, Node.js and MongoDB. Currently building portfolio projects to deepen practical experience with modern full-stack development and game development pipelines.
-      </p>
-    </div>
-
-  </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-header reveal">
-    <span class="section-num">04</span>
-    <h2 class="section-title">Skills</h2>
-  </div>
-  <div class="skills-grid">
-    <div class="skill-group reveal">
-      <h3>Languages</h3>
-      <div class="skill-items">
-        <div class="skill-item">JavaScript (ES6+)</div>
-        <div class="skill-item">VB.NET</div>
-        <div class="skill-item">SQL</div>
-        <div class="skill-item">HTML5 &amp; CSS3</div>
-        <div class="skill-item">Python</div>
-        <div class="skill-item">C#</div>
-        <div class="skill-item">Dart</div>
-      </div>
-    </div>
-    <div class="skill-group reveal">
-      <h3>Frameworks &amp; Libraries</h3>
-      <div class="skill-items">
-        <div class="skill-item">React</div>
-        <div class="skill-item">Vue 3</div>
-        <div class="skill-item">jQuery</div>
-        <div class="skill-item">.NET Framework</div>
-        <div class="skill-item">Tailwind CSS</div>
-        <div class="skill-item">Bootstrap</div>
-        <div class="skill-item">Flutter</div>
-      </div>
-    </div>
-    <div class="skill-group reveal">
-      <h3>Tools &amp; Platforms</h3>
-      <div class="skill-items">
-        <div class="skill-item">Git &amp; GitHub</div>
-        <div class="skill-item">Node.js</div>
-        <div class="skill-item">MongoDB</div>
-        <div class="skill-item">MS SQL Server</div>
-        <div class="skill-item">Visual Studio / VS Code</div>
-        <div class="skill-item">Unity 6</div>
-        <div class="skill-item">Godot &amp; Unreal Engine 5</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <h2 class="section-title reveal">Let's work<br/><em style="font-family:var(--serif);font-style:italic;color:var(--accent)">together.</em></h2>
-  <p class="contact-sub reveal">
-    Open to front-end, full-stack and game development roles in the UK, Milan (Italy) or remotely.
-    Drop me a message — I respond to every enquiry.
-  </p>
-  <div class="contact-links reveal">
-    <a href="mailto:gianluca.pagliuca.93@gmail.com" class="btn btn-primary">Email Me</a>
-    <a href="https://github.com/GianlucaPagliuca" target="_blank" class="btn" style="border-color:rgba(255,255,255,0.2);color:#fff;">GitHub ↗</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>© 2026 Gianluca Pagliuca</p>
-  <p>Built with HTML · CSS · JS</p>
-</footer>
-
-<script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(
-    entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } }),
-    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
-  );
-  reveals.forEach(el => observer.observe(el));
-</script>
-</body>
+  <script src="index.js"></script>
+  </body>
 </html>
